@@ -1,0 +1,172 @@
+<!DOCTYPE html> <!-- dobro e-->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title>Bootstrap E-commerce Templates</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<!--[if ie]><meta content='IE=8' http-equiv='X-UA-Compatible'/><![endif]-->
+		<!-- bootstrap -->
+		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">      
+		<link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">		
+		<link href="themes/css/bootstrappage.css" rel="stylesheet"/>
+		
+		<!-- global styles -->
+		<link href="themes/css/flexslider.css" rel="stylesheet"/>
+		<link href="themes/css/main.css" rel="stylesheet"/>
+
+		<!-- scripts -->
+		<script src="themes/js/jquery-1.7.2.min.js"></script>
+		<script src="bootstrap/js/bootstrap.min.js"></script>				
+		<script src="themes/js/superfish.js"></script>	
+		<script src="themes/js/jquery.scrolltotop.js"></script>
+		<!--[if lt IE 9]>			
+			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+			<script src="js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+    <body>		
+		<div id="top-bar" class="container">
+			<h1 th:if="${param.error}" th:text="${param.error}"></h1>
+			<div class="row">
+				<div class="span4">
+
+				</div>
+				<div class="span8">
+					<div class="account pull-right">
+						<ul class="user-menu">
+
+							<li sec:authorize="isAuthenticated()">
+								<a href="#">
+									<th:block th:if="${#request.getRemoteUser() != null}"
+											  th:text="${#request.getRemoteUser()}"></th:block>
+								</a>
+							</li>
+							<li sec:authorize="isAuthenticated()">
+								<a href="/index">Enter live chat</a>
+							</li>
+							<li sec:authorize="hasRole('ROLE_ADMIN')">
+								<a href="/manufacturers">Manufacturers</a>
+							</li>
+							<li sec:authorize="hasRole('ROLE_ADMIN')">
+								<a href="/categories">Categories</a>
+							</li>
+							<li><a href="/products">Products</a></li>
+
+							<li sec:authorize="isAuthenticated()">
+								<a href="/cart">Cart</a>
+							</li>
+							<li><a href="/contact">Contact</a></li>
+							<li sec:authorize="isAuthenticated()">
+								<a href="/logout">Logout</a>
+							</li>
+							<li sec:authorize="!isAuthenticated()">
+								<a href="/login">Login</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="wrapper" class="container">
+			<section class="navbar main-menu">
+				<div class="navbar-inner main-menu">				
+					<a href="/home" class="logo pull-left"><img src="themes/images/logo.png" class="site_logo" alt=""></a>
+
+				</div>
+			</section>			
+			<section class="header_text sub">
+			<img class="pageBanner" src="themes/images/pageBanner.png" alt="New products" >
+				<h4><span>Regsiter</span></h4>
+			</section>			
+			<section class="main-content">
+				<div class="container">
+					<form class="form-signin mt-xl-5" method="post" action="/register">
+						<h2 class="form-signin-heading">Register</h2>
+						<p>
+							<label for="username" class="sr-only">Username</label>
+							<input type="text" id="username" name="username" class="form-control" placeholder="Username" required=""
+								   autofocus="">
+						</p>
+						<p>
+							<label for="password" class="sr-only">Password</label>
+							<input type="password" id="password" name="password" class="form-control" placeholder="Password"
+								   required="">
+						</p>
+						<p>
+							<label for="repeatedPassword" class="sr-only">Repeat Password</label>
+							<input type="password" id="repeatedPassword" name="repeatedPassword" class="form-control"
+								   placeholder="Repeat Password" required="">
+						</p>
+						<p>
+							<label for="name" class="sr-only">Name</label>
+							<input type="text" id="name" name="name" class="form-control" placeholder="Name" required="" autofocus="">
+						</p>
+						<p>
+							<label for="surname" class="sr-only">Surname</label>
+							<input type="text" id="surname" name="surname" class="form-control" placeholder="Surname" required=""
+								   autofocus="">
+						</p>
+						<p>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" name="role" type="radio" id="ROLE_ADMIN" value="ROLE_ADMIN">
+							<label class="form-check-label" for="ROLE_ADMIN">ROLE_ADMIN</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" name="role"  type="radio" id="ROLE_USER" value="ROLE_USER">
+							<label class="form-check-label" for="ROLE_USER">ROLE_USER</label>
+						</div>
+						</p>
+						<button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+					</form>
+					<a href="/login" class="btn btn-block btn-light">Already have an account? Login here!</a>
+				</div>
+			</section>
+			<section id="footer-bar">
+				<div class="row">
+					<div class="span3">
+						<h4>Navigation</h4>
+						<ul class="nav">
+							<li><a href="./index.html">Homepage</a></li>  
+							<li><a href="./about.html">About Us</a></li>
+							<li><a href="./contact.html">Contac Us</a></li>
+							<li><a href="./cart.html">Your Cart</a></li>
+							<li><a href="./register.html">Login</a></li>							
+						</ul>					
+					</div>
+					<div class="span4">
+						<h4>My Account</h4>
+						<ul class="nav">
+							<li><a href="#">My Account</a></li>
+							<li><a href="#">Order History</a></li>
+							<li><a href="#">Wish List</a></li>
+							<li><a href="#">Newsletter</a></li>
+						</ul>
+					</div>
+					<div class="span5">
+						<p class="logo"><img src="themes/images/logo.png" class="site_logo" alt=""></p>
+						<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. the  Lorem Ipsum has been the industry's standard dummy text ever since the you.</p>
+						<br/>
+						<span class="social_icons">
+							<a class="facebook" href="#">Facebook</a>
+							<a class="twitter" href="#">Twitter</a>
+							<a class="skype" href="#">Skype</a>
+							<a class="vimeo" href="#">Vimeo</a>
+						</span>
+					</div>					
+				</div>	
+			</section>
+			<section id="copyright">
+				<span>Copyright 2013 bootstrappage template  All right reserved.</span>
+			</section>
+		</div>
+		<script src="themes/js/common.js"></script>
+		<script>
+			$(document).ready(function() {
+				$('#checkout').click(function (e) {
+					document.location.href = "checkout.html";
+				})
+			});
+		</script>		
+    </body>
+</html>

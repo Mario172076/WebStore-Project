@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>Bootstrap E-commerce Templates</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<!--[if ie]><meta content='IE=8' http-equiv='X-UA-Compatible'/><![endif]-->
+	<!-- bootstrap -->
+	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+	<link href="/themes/css/bootstrappage.css" rel="stylesheet"/>
+
+	<!-- global styles -->
+	<link href="/themes/css/flexslider.css" rel="stylesheet"/>
+	<link href="/themes/css/main.css" rel="stylesheet"/>
+
+	<!-- scripts -->
+	<script src="/themes/js/jquery-1.7.2.min.js"></script>
+	<script src="/bootstrap/js/bootstrap.min.js"></script>
+	<script src="/themes/js/superfish.js"></script>
+	<script src="/themes/js/jquery.scrolltotop.js"></script>
+	<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body>
+<div id="top-bar" class="container">
+	<div class="row">
+		<div class="span4">
+			<form id="filter-form">
+				<label>Search</label>
+				<input id="nameSearch" type="text" name="nameSearch"/>
+				<label>Choose category</label>
+				<select id="category" name="category">
+					<option value="">All</option>
+					<!-- For each menu type you should have one <option> like below  -->
+					<option th:each="category: ${categories}" th:value="${category.getId()}" th:text="${category.getName()}"> [category]</option>
+				</select>
+				<label>Choose Manufacturer</label>
+				<select id="manufacturer" name="manufacturer">
+					<option value="">All</option>
+					<!-- For each menu type you should have one <option> like below  -->
+					<option th:each="manufacturer: ${manufacturers}" th:value="${manufacturer.getId()}" th:text="${manufacturer.getName()}"> [manufacturer]</option>
+				</select>
+				<button id="filter" type="submit">Filter</button>
+			</form>
+		</div>
+		<div class="span8">
+			<div class="account pull-right">
+				<ul class="user-menu">
+
+					<li sec:authorize="isAuthenticated()">
+						<a href="#">
+							<th:block th:if="${#request.getRemoteUser() != null}"
+									  th:text="${#request.getRemoteUser()}"></th:block>
+						</a>
+					</li>
+					<li sec:authorize="isAuthenticated()">
+						<a href="/index">Enter live chat</a>
+					</li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')">
+						<a href="/manufacturers">Manufacturers</a>
+					</li>
+					<li sec:authorize="hasRole('ROLE_ADMIN')">
+						<a href="/categories">Categories</a>
+					</li>
+					<li><a href="/products">Products</a></li>
+					<li sec:authorize="isAuthenticated()">
+						<a href="/cart">Cart</a>
+					</li>
+					<li><a href="/contact">Contact</a></li>
+
+					<li sec:authorize="isAuthenticated()">
+						<a href="/logout">Logout</a>
+					</li>
+					<li sec:authorize="!isAuthenticated()">
+						<a href="/login">Login</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="wrapper" class="container">
+	<section class="navbar main-menu">
+		<div class="navbar-inner main-menu">
+			<a href="/home" class="logo pull-left"><img src="/themes/images/logo.png" class="site_logo" alt=""></a>
+
+		</div>
+	</section>
+	<section class="header_text sub">
+		<img class="pageBanner" src="/themes/images/pageBanner.png" alt="New products" >
+		<h4><span>New products</span></h4>
+	</section>
+	<section class="main-content">
+
+		<div class="row">
+			<div class="span9" >
+				<ul class="thumbnails listing-products" th:if="${listProducts.size() > 0}" >
+					<li class="span3" th:each="product : ${listProducts}">
+						<div class="product-box">
+							<span class="sale_tag"></span>
+							<a th:href="@{'/products/details/{id}' (id=${product.getId()})}"><img th:src="${product.getImageBase64()}"/></a>
+							<a href="#" th:text="${product.getName()}"class="title"></a><br/>
+							<h4> <span th:text="${product.getPrice()}" class="price"></span><span>€</span></h4>
+							<p class="price">
+							<form th:action="@{'/products/delete/{id}' (id=${product.getId()})}"
+								  th:method="DELETE" sec:authorize="hasRole('ROLE_ADMIN')">
+								<button type="submit"
+										class="btn btn-sm btn-danger delete-product">
+									<i class="fa fa-trash">Delete</i>
+								</button>
+							</form>
+							<th:block sec:authorize="hasRole('ROLE_ADMIN')">
+								<a th:href="@{'/products/edit-form/{id}' (id=${product.getId()})}"
+								   class="btn btn-sm btn-info edit-product">
+									<i class="fa fa-trash">Edit</i>
+								</a>
+							</th:block>
+							</p>
+						</div>
+					</li>
+
+				</ul>
+				<div class="span9" sec:authorize="hasRole('ROLE_ADMIN')">
+					<a href="/products/add-form" class="btn btn-block btn-dark add-product-btn">
+						Add new product
+					</a>
+				</div>
+				<hr>
+
+				<div class="span9" th:if="${totalPages > 1}">
+					<div>
+						<div class="col-sm-2">
+							Total Items: [[${totalItems} ]]
+						</div>
+						<span class="pagination" th:each="i: ${#numbers.sequence(1, totalPages)}">
+							<a th:if="${currentPage != i}" th:href="@{'/products/page/' + ${i}}">[[${i}]] </a>
+							<span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;
+						</span>
+
+						<span class="pagination">
+							<a th:if="${currentPage < totalPages}" th:href="@{'/products/page/' + ${currentPage+1}}">Next</a>
+							<span th:unless="${currentPage < totalPages}">Next</span>
+						</span>
+
+						<span class="pagination">
+							<a th:if="${currentPage < totalPages}" th:href="@{'/products/page/' + ${totalPages}}">Last</a>
+							<span th:unless="${currentPage < totalPages}">Last</span>
+						</span>
+					</div>
+				</div>
+
+
+			</div>
+			<div class="span3 col">
+
+								<div class="block">
+									<h4 class="title">
+										<span class="pull-left"><span class="text">Randomize</span></span>
+										<span class="pull-right">
+													<a class="left button" href="#myCarousel" data-slide="prev"></a><a class="right button" href="#myCarousel" data-slide="next"></a>
+												</span>
+									</h4>
+									<div id="myCarousel" class="carousel slide">
+										<div class="carousel-inner">
+											<div class="active item">
+												<ul class="thumbnails listing-products" >
+													<li class="span3" th:each="productt : ${productss.subList(0, 2)}">
+														<div class="product-box" >
+															<span class="sale_tag"></span>
+															<a th:href="@{'/products/details/{id}' (id=${productt.getId()})}"><img th:src="${productt.getImageBase64()}"/></a>
+															<a href="#" th:text="${productt.getName()}"class="title"></a><br/>
+															<p th:text="${productt.getPrice()}" class="price"></p>
+														</div>
+													</li>
+												</ul>
+											</div>
+											<div class="item">
+												<ul class="thumbnails listing-products">
+													<li class="span3" th:each="productt : ${productss.subList(6, 8)}">
+														<div class="product-box" >
+															<span class="sale_tag"></span>
+															<a th:href="@{'/products/details/{id}' (id=${productt.getId()})}"><img th:src="${productt.getImageBase64()}"/></a>
+															<a href="#" th:text="${productt.getName()}"class="title"></a><br/>
+															<p th:text="${productt.getPrice()}" class="price"></p>
+														</div>
+													</li>
+												</ul>
+											</div>
+											<div class="item">
+												<ul class="thumbnails listing-products">
+													<li class="span3" th:each="productt : ${productss.subList(3, 5)}">
+														<div class="product-box" >
+															<span class="sale_tag"></span>
+															<a th:href="@{'/products/details/{id}' (id=${productt.getId()})}"><img th:src="${productt.getImageBase64()}"/></a>
+															<a href="#" th:text="${productt.getName()}"class="title"></a><br/>
+															<p th:text="${productt.getPrice()}" class="price"></p>
+														</div>
+													</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+				<div class="block">
+					<h4 class="title"><strong>Best</strong> Seller</h4>
+					<ul class="small-product" th:each="product : ${productss}"
+						th:if="${product.getQuantity() < 6}">
+						<li>
+							<a th:href="@{'/products/details/{id}' (id=${product.getId()})}"><img th:src="${product.getImageBase64()}"/></a>
+							<a th:text="${product.getName()}" th:href="@{'/products/details/{id}' (id=${product.getId()})}"></a>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+
+
+		</div>
+	</section>
+	<section id="footer-bar">
+		<div class="row">
+			<div class="span3">
+				<h4>Navigation</h4>
+				<ul class="nav" >
+					<li><a href="./index.html">Homepage</a></li>
+					<li><a href="./about.html">About Us</a></li>
+					<li><a href="./contact.html">Contac Us</a></li>
+					<li><a href="./cart.html">Your Cart</a></li>
+					<li><a href="./register.html">Login</a></li>
+				</ul>
+			</div>
+			<div class="span4">
+				<h4>My Account</h4>
+				<ul class="nav">
+					<li><a href="#">My Account</a></li>
+					<li><a href="#">Order History</a></li>
+					<li><a href="#">Wish List</a></li>
+					<li><a href="#">Newsletter</a></li>
+				</ul>
+			</div>
+			<div class="span5">
+				<p class="logo"><img src="themes/images/logo.png" class="site_logo" alt=""></p>
+				<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. the  Lorem Ipsum has been the industry's standard dummy text ever since the you.</p>
+				<br/>
+				<span class="social_icons">
+							<a class="facebook" href="#">Facebook</a>
+							<a class="twitter" href="#">Twitter</a>
+							<a class="skype" href="#">Skype</a>
+							<a class="vimeo" href="#">Vimeo</a>
+						</span>
+			</div>
+		</div>
+	</section>
+	<section id="copyright">
+		<span>Copyright 2013 bootstrappage template  All right reserved.</span>
+	</section>
+</div>
+<script src="themes/js/common.js"></script>
+</body>
+</html>
